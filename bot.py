@@ -14,7 +14,7 @@ bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 dp.middleware.setup(LoggingMiddleware())
-
+ 
 register_handlers_common(dp)
 register_photo_handlers(dp)
 register_user_handlers(dp)
@@ -26,3 +26,4 @@ async def on_startup(dp):
 
 if __name__ == "__main__":
     executor.start_polling(dp, on_startup=on_startup, allowed_updates=["message", "callback_query"])
+

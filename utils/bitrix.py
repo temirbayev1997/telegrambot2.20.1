@@ -1,8 +1,7 @@
 import aiohttp
 import logging
-import requests
 from config import BITRIX_WEBHOOK_URL
-
+from aiogram import Dispatcher, types
 
 async def get_users_from_bitrix():
     async with aiohttp.ClientSession() as session:
@@ -28,7 +27,7 @@ async def check_email_exists_in_bitrix(email):
     async with aiohttp.ClientSession() as session:
         try:
             url = f"{BITRIX_WEBHOOK_URL}/user.get"
-            params = {'filter[EMAIL]': email.strip()}  # Убедитесь, что email передается правильно
+            params = {'filter[EMAIL]': email.strip()}
             async with session.get(url, params=params) as response:
                 response_data = await response.json()
                 if response.status != 200 or 'error' in response_data:
@@ -39,18 +38,11 @@ async def check_email_exists_in_bitrix(email):
             logging.error(f"Ошибка при запросе к Bitrix: {e}")
             return False
 
-async def add_user_to_bitrix(user_info, contact_type):
+async def add_user_to_bitrix(user_info):
     async with aiohttp.ClientSession() as session:
         try:
             url = f"{BITRIX_WEBHOOK_URL}/user.add"
-            data = {
-                'fields': {
-                    'NAME': user_info['first_name'],
-                    'LAST_NAME': user_info['last_name'],
-                    'EMAIL': user_info['contact'] if contact_type == 'email' else '',
-                    'PHONE': [{'VALUE': user_info['contact'], 'VALUE_TYPE': 'WORK'}] if contact_type == 'phone' else []
-                }
-            }
+            data = user_info
             logging.debug(f"Данные для Bitrix: {data}")
             async with session.post(url, json=data) as response:
                 response_data = await response.json()
