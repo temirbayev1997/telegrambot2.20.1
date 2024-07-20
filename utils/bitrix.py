@@ -1,7 +1,9 @@
 import aiohttp
 import logging
 from config import BITRIX_WEBHOOK_URL
-from aiogram import Dispatcher, types
+import requests
+import json
+
 
 async def get_users_from_bitrix():
     async with aiohttp.ClientSession() as session:
