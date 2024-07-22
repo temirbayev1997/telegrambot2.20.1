@@ -41,3 +41,4 @@ async def on_startup(dp):
 
 if __name__ == "__main__":
     executor.start_polling(dp, on_startup=on_startup, allowed_updates=["message", "callback_query"])
+# aodkewfrkeofjefjei
