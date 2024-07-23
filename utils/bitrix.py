@@ -2,12 +2,13 @@ import aiohttp
 import logging
 from config import BITRIX_WEBHOOK_URL
 import requests
-import json
+# import json
 
 
 async def get_users_from_bitrix():
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True) as session:
         async with session.get(f"{BITRIX_WEBHOOK_URL}/user.get") as response:
+            # response = requests.get(f"{BITRIX_WEBHOOK_URL}/user.get")
             if response.status == 200:
                 data = await response.json()
                 return data
@@ -16,7 +17,7 @@ async def get_users_from_bitrix():
                 return None
 
 async def get_user_fields():
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True) as session:
         async with session.get(f"{BITRIX_WEBHOOK_URL}/user.fields") as response:
             if response.status == 200:
                 data = await response.json()
@@ -26,7 +27,7 @@ async def get_user_fields():
                 return None
 
 async def check_email_exists_in_bitrix(email):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True) as session:
         try:
             url = f"{BITRIX_WEBHOOK_URL}/user.get"
             params = {'filter[EMAIL]': email.strip()}
@@ -41,7 +42,7 @@ async def check_email_exists_in_bitrix(email):
             return False
 
 async def add_user_to_bitrix(user_info):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True) as session:
         try:
             url = f"{BITRIX_WEBHOOK_URL}/user.add"
             data = user_info
