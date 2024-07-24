@@ -1,0 +1,16 @@
+from aiogram import types
+from aiogram.dispatcher import Dispatcher
+
+def helper_inline_button(dp: Dispatcher):
+    dp.register_callback_query_handler(handlers_inline_buttons, lambda c: c.data == "Забронировать место")
+
+async def handlers_inline_buttons(callback_query: types.CallbackQuery):
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton(text="Option 1", callback_data="option_1"))
+    keyboard.add(types.InlineKeyboardButton(text="Option 2", callback_data="option_2"))
+    keyboard.add(types.InlineKeyboardButton(text="Option 3", callback_data="option_3"))
+    keyboard.add(types.InlineKeyboardButton(text="Option 4", callback_data="option_4"))
+    
+    await callback_query.message.answer("Выберите действие:", reply_markup=keyboard)
+    await callback_query.answer()
+
