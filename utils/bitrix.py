@@ -4,6 +4,22 @@ from config import BITRIX_WEBHOOK_URL
 # import requests
 # import json
 
+async def book_meeting_room(room, start_time, end_time):
+    async with aiohttp.ClientSession() as session:
+        data = {
+            "fields": {
+                "NAME": f"Бронирование {room}",
+                "DESCRIPTION": f"Бронирование переговорной {room} с {start_time} до {end_time}",
+                "CAL_TYPE": "user",
+                "OWNER_ID": 1,  # Replace with actual user ID
+                "FROM": f"2024-07-04T{start_time}:00Z",
+                "TO": f"2024-07-04T{end_time}:00Z",
+                "ATTENDEES_CODES": ["U1"],  # Replace with actual attendee codes
+            }
+        }
+        async with session.post(f"{BITRIX_WEBHOOK_URL}/calendar.event.add", json=data) as response:
+            result = await response.json()
+            return result
 
 async def get_users_from_bitrix():
     async with aiohttp.ClientSession(trust_env=True) as session:

@@ -11,4 +11,5 @@ async def start_command(message: types.Message):
     keyboard.add(types.InlineKeyboardButton(text="Создать пользователя", callback_data="Создать пользователя"))
     keyboard.add(types.InlineKeyboardButton(text="Поздравить пользователя", callback_data="Поздравить пользователя"))
     keyboard.add(types.InlineKeyboardButton(text="Загрузить фото", callback_data="Загрузить фото"))
+    keyboard.add(types.InlineKeyboardButton(text="Забронировать место", callback_data="Забронировать место"))
     await message.answer("Выберите действие:", reply_markup=keyboard)
