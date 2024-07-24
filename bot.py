@@ -9,7 +9,7 @@ from handlers.common import register_handlers_common
 from handlers.photo import register_photo_handlers
 from handlers.user import register_user_handlers
 from handlers.congratulation import register_congratulation_handlers
-from handlers.help import helper_inline_button
+from handlers.help import register_help_command
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 logging.basicConfig(level=logging.DEBUG)
@@ -32,7 +32,7 @@ register_handlers_common(dp)
 register_photo_handlers(dp)
 register_user_handlers(dp)
 register_congratulation_handlers(dp)
-helper_inline_button(dp)
+register_help_command(dp)  
 
 async def on_startup(dp):
     await bot.set_my_commands([
