@@ -1,7 +1,7 @@
 import aiohttp
 import logging
 from config import BITRIX_WEBHOOK_URL
-import requests
+# import requests
 # import json
 
 
