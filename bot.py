@@ -10,7 +10,7 @@ from handlers.photo import register_photo_handlers
 from handlers.user import register_user_handlers
 from handlers.congratulation import register_congratulation_handlers
 from handlers.help import register_help_command
-from handlers.booking import register_booking_handlers
+from handlers.booking import booking_user_handlers
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 logging.basicConfig(level=logging.DEBUG)
@@ -34,7 +34,7 @@ register_photo_handlers(dp)
 register_user_handlers(dp)
 register_congratulation_handlers(dp)
 register_help_command(dp)
-register_booking_handlers(dp)
+booking_user_handlers(dp)
 
 async def on_startup(dp):
     await bot.set_my_commands([
