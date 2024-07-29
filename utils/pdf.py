@@ -1,9 +1,8 @@
-import io
-import requests
+import requests, tempfile
+
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from PIL import Image
-import tempfile
 
 async def photo_to_pdf(photo_url, pdf_bytes):
     response = requests.get(photo_url)

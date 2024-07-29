@@ -1,8 +1,11 @@
-import logging
+import logging, io
+
 from aiogram import Dispatcher, types
+
 from datetime import datetime
+
 from dateutil.parser import parse as parse_date
-import io
+
 from utils.bitrix import get_users_from_bitrix
 from utils.pdf import photo_to_pdf
 

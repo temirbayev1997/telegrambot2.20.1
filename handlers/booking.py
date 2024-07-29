@@ -4,9 +4,8 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-import requests
-from utils.bitrix import booking_add
-from utils.bitrix import booking_get
+from utils.bitrix import booking_add, booking_get
+from handlers.common import start_command  
 
 ROOMS = {
     "room1": "room1_24",
@@ -57,7 +56,6 @@ def create_inline_keyboard_times(available_times):
 async def process_room_selection(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "back_to_main":
         await state.finish()
-        from handlers.common import start_command
         await start_command(callback_query.message)
         await callback_query.answer()
         return
@@ -145,6 +143,7 @@ async def process_time(callback_query: types.CallbackQuery, state: FSMContext):
         await callback_query.message.answer("Ошибка при бронировании, попробуйте позже.")
 
     await state.finish()
+    await start_command(callback_query.message)  
     await callback_query.answer()
 
 def register_booking_handlers(dp: Dispatcher):

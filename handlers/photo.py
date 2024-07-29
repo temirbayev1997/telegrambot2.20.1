@@ -1,12 +1,13 @@
-import io
-import logging
-import requests
+import io, logging, requests
+
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import InputFile
+
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+
 from PIL import Image
 
 class Form(StatesGroup):

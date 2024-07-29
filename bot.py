@@ -1,9 +1,12 @@
 import logging
+
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.types import BotCommand
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.dispatcher.handler import CancelHandler
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
+
 from config import API_TOKEN, ALLOWED_USERS
 from handlers.common import register_handlers_common
 from handlers.photo import register_photo_handlers
@@ -11,7 +14,6 @@ from handlers.user import register_user_handlers
 from handlers.congratulation import register_congratulation_handlers
 from handlers.help import register_help_command
 from handlers.booking import booking_user_handlers
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 logging.basicConfig(level=logging.DEBUG)
 bot = Bot(token=API_TOKEN)
