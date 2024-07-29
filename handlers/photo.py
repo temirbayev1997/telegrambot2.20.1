@@ -4,7 +4,7 @@ import requests
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import InputFile, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InputFile
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from PIL import Image

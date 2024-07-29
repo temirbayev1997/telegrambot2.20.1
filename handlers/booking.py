@@ -133,7 +133,7 @@ async def process_time(callback_query: types.CallbackQuery, state: FSMContext):
         'to': end_time.strftime('%Y-%m-%d %H:%M:%S'),
         'section': "26",
         'location': ROOMS[room],
-        'resource': room  # Имя ресурса (название переговорной комнаты)
+        'resource': room 
     }
 
     response = await booking_add(event_data)
