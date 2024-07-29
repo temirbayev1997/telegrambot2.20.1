@@ -7,6 +7,8 @@ from aiogram.types import InputFile
 
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from handlers.common import start_command
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from PIL import Image
 
@@ -18,7 +20,8 @@ def register_photo_handlers(dp: Dispatcher):
 
     @dp.callback_query_handler(lambda c: c.data == 'Загрузить фото')
     async def handle_upload_photo(callback_query: types.CallbackQuery):
-        await callback_query.message.answer("Отправьте ссылку на изображение.")
+        keyboard = InlineKeyboardMarkup().add(InlineKeyboardButton(text="Отмена", callback_data="cancel"))
+        await callback_query.message.answer("Отправьте ссылку на изображение или нажмите 'Отмена' для выхода.", reply_markup=keyboard)
         await Form.waiting_for_photo_url.set()
         await callback_query.answer()
 
@@ -27,7 +30,7 @@ def register_photo_handlers(dp: Dispatcher):
         if message.text.startswith('http'):
             try:
                 response = requests.get(message.text)
-                response.raise_for_status()  # Проверка успешности запроса
+                response.raise_for_status() 
                 img = Image.open(io.BytesIO(response.content))
 
                 pdf_file = io.BytesIO()
@@ -44,3 +47,9 @@ def register_photo_handlers(dp: Dispatcher):
                 await state.finish()
         else:
             await message.answer("Пожалуйста, отправьте корректную ссылку на изображение.")
+
+    @dp.callback_query_handler(lambda c: c.data == 'cancel', state=Form.waiting_for_photo_url)
+    async def cancel_upload(callback_query: types.CallbackQuery, state: FSMContext):
+        await state.finish()
+        await start_command(callback_query.message)
+        await callback_query.answer()
