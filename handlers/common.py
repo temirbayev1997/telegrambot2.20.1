@@ -1,11 +1,15 @@
+# проверка ошибки
 import logging
 
+# библотеки 
 from aiogram import types
 from aiogram.dispatcher import Dispatcher
 
+# функция отвечающая за кнопку старт
 def register_handlers_common(dp: Dispatcher):
     dp.register_message_handler(start_command, commands=['start'])
 
+# последующие кнопки
 async def start_command(message: types.Message):
     logging.debug("Обработка команды /start")
     keyboard = types.InlineKeyboardMarkup()
