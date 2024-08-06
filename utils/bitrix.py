@@ -51,33 +51,33 @@ async def check_email_exists_in_bitrix(email):
         except Exception as e:
             logging.error(f"Ошибка при запросе к Bitrix: {e}")
             return False
-# не работает 
-# async def add_user_to_bitrix(user_data):
-#     try:
-#         response = requests.post(f"{BITRIX_WEBHOOK_URL}/user.add", json=user_data)
-#         response_data = response.json()
-#         if response.status_code == 200 and 'result' in response_data:
-#             return True, response_data
-#         else:
-#             logging.error(f"Ошибка при создании пользователя: {response_data}")
-#             return False, response_data
-#     except Exception as e:
-#         logging.exception("Exception occurred while adding user to Bitrix")
-#         return False, {'error_description': str(e)}
+
+async def add_user_to_bitrix(user_data):
+    try:
+        response = requests.post(f"{BITRIX_WEBHOOK_URL}/user.add", json=user_data)
+        response_data = response.json()
+        if response.status_code == 200 and 'result' in response_data:
+            return True, response_data
+        else:
+            logging.error(f"Ошибка при создании пользователя: {response_data}")
+            return False, response_data
+    except Exception as e:
+        logging.exception("Exception occurred while adding user to Bitrix")
+        return False, {'error_description': str(e)}
         
-# async def booking_get(user_info):
-#     url = f"{BITRIX_WEBHOOK_URL}/calendar.event.get"
-#     async with aiohttp.ClientSession(trust_env=True) as session:
-#         try:
-#             async with session.post(url, json=user_info) as response:
-#                 response_data = await response.json()
-#                 if response.status != 200 or 'error' in response_data:
-#                     logging.error(f"Error: {response.status} - {response_data}")
-#                     return False
-#                 return response_data
-#         except Exception as e:
-#             logging.error(f"Error: {e}")
-#             return False
+async def booking_get(user_info):
+    url = f"{BITRIX_WEBHOOK_URL}/calendar.event.get"
+    async with aiohttp.ClientSession(trust_env=True) as session:
+        try:
+            async with session.post(url, json=user_info) as response:
+                response_data = await response.json()
+                if response.status != 200 or 'error' in response_data:
+                    logging.error(f"Error: {response.status} - {response_data}")
+                    return False
+                return response_data
+        except Exception as e:
+            logging.error(f"Error: {e}")
+            return False
 
 # добавление календаря
 async def booking_add(event_data):

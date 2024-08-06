@@ -4,15 +4,14 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
 from utils.bitrix import booking_add, booking_get
-from handlers.common import start_command
+from handlers.common import start_command  
 
 ROOMS = {
-    "room1": "room1_24",
-    "room2": "room2_26",
-    "room1_place2": "room1_place2_28",
-    "room2_place2": "room2_place2_30"
+    "Комната 1": "9",
+    "Комната 2": "11",
+    "Комната 3": "13",
+    "Комната 4": "15"
 }
 
 class BookingState(StatesGroup):
@@ -20,11 +19,11 @@ class BookingState(StatesGroup):
     selecting_time = State()
     confirming_booking = State()
 
-def register_booking_handlers(dp: Dispatcher):
-    dp.register_callback_query_handler(lambda c: handle_booking_request, lambda c: c.data == "Забронировать место")
-    dp.register_callback_query_handler(lambda c: process_room_selection, state=BookingState.selecting_room)
-    dp.register_callback_query_handler(lambda c: process_date, state=BookingState.selecting_time)
-    dp.register_callback_query_handler(lambda c: process_time, state=BookingState.confirming_booking)
+def booking_user_handlers(dp: Dispatcher):
+    dp.register_callback_query_handler(handle_booking_request, lambda c: c.data == "Забронировать место")
+    dp.register_callback_query_handler(process_room_selection, state=BookingState.selecting_room)
+    dp.register_callback_query_handler(process_date, state=BookingState.selecting_time)
+    dp.register_callback_query_handler(process_time, state=BookingState.confirming_booking)
 
 async def handle_booking_request(callback_query: types.CallbackQuery, state: FSMContext):
     await callback_query.message.answer("Выберите переговорную комнату:", reply_markup=create_inline_keyboard_rooms())
@@ -130,24 +129,23 @@ async def process_time(callback_query: types.CallbackQuery, state: FSMContext):
         'name': f"Бронирование переговорки {room}",
         'from': start_time.strftime('%Y-%m-%d %H:%M:%S'),
         'to': end_time.strftime('%Y-%m-%d %H:%M:%S'),
-        'section': "26",
-        'location': ROOMS[room],
+        'section': ROOMS[room],
         'resource': room 
     }
 
-    # response = await booking_add(event_data)
+    response = await booking_add(event_data)
 
-    # if response is not None and 'result' in response:
-    #     await callback_query.message.answer("Бронирование успешно завершено!")
-    #     reminder_time = start_time - timedelta(minutes=15)
-
-    # else:
-    #     logging.error(f"Ошибка при бронировании: {response}")
-    #     await callback_query.message.answer("Ошибка при бронировании, попробуйте позже.")
+    if response is not None and 'result' in response:
+        await callback_query.message.answer("Бронирование успешно завершено!")
+    else:
+        logging.error(f"Ошибка при бронировании: {response}")
+        await callback_query.message.answer("Ошибка при бронировании, попробуйте позже.")
 
     await state.finish()
     await start_command(callback_query.message)  
     await callback_query.answer()
 
-async def send_reminder(message: types.Message):
-    await message.answer("Напоминание: Ваша встреча начнется через 15 минут.")
+def register_booking_handlers(dp: Dispatcher):
+    dp.register_callback_query_handler(process_room_selection, state=BookingState.selecting_room)
+    dp.register_callback_query_handler(process_date, state=BookingState.selecting_time)
+    dp.register_callback_query_handler(process_time, state=BookingState.confirming_booking)
