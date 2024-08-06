@@ -13,13 +13,14 @@ from handlers.photo import register_photo_handlers
 from handlers.user import register_user_handlers
 from handlers.congratulation import register_congratulation_handlers
 from handlers.help import register_help_command
-from handlers.booking import booking_user_handlers
+from handlers.booking import register_booking_handlers
 
 logging.basicConfig(level=logging.DEBUG)
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 dp.middleware.setup(LoggingMiddleware())
+
 
 class AccessMiddleware(BaseMiddleware):
     async def on_process_message(self, message: types.Message, data: dict):
@@ -36,7 +37,7 @@ register_photo_handlers(dp)
 register_user_handlers(dp)
 register_congratulation_handlers(dp)
 register_help_command(dp)
-booking_user_handlers(dp)
+register_booking_handlers(dp)
 
 async def on_startup(dp):
     await bot.set_my_commands([
