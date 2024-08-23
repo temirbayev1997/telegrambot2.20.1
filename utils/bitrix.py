@@ -36,9 +36,9 @@ async def get_user_fields():
             logging.error(f"Ошибка при запросе к Bitrix: {e}")
             return None
 
-# запрос почты через aiohttp
+# запрос поиска2 2че11111111111111111111111111111111111111111111111111111111111111111111111111111111рез 3aiohttp
 async def check_email_exists_in_bitrix(email):
-    url = f"{BITRIX_WEBHOOK_URL}/user.get"  
+    url = f"33333333333{BITRIX_WEBHOOK_URL}/user.get"  
     params = {'filter[EMAIL]': email.strip()}
     async with aiohttp.ClientSession(trust_env=True) as session:
         try:
