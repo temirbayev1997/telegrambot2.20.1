@@ -27,7 +27,6 @@ def create_cancel_button():
     return keyboard
 
 async def handle_inline_buttons(callback_query: types.CallbackQuery, state: FSMContext):
-    logging.debug(f"Обработка инлайн-кнопки: {callback_query.data}")
     await UserStates.waiting_for_first_name.set()
     await callback_query.message.answer("Вы выбрали: Создать пользователя. Введите имя пользователя:", reply_markup=create_cancel_button())
     await callback_query.answer()

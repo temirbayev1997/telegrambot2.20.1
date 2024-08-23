@@ -1,18 +1,22 @@
-import logging
 from datetime import datetime, timedelta, date, time as dtime
+import logging
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils.bitrix import booking_add, booking_get
-from handlers.common import start_command  
+from handlers.common import start_command
 
 ROOMS = {
     "Комната 1": "11",
-    "Комната 2": "13",  
+    "Комната 2": "13",
     "Комната 3": "15",
     "Комната 4": "17"
 }
+
+def get_current_time():
+    """Получение текущего времени в виде объекта datetime без временной зоны"""
+    return datetime.now()
 
 class BookingState(StatesGroup):
     selecting_room = State()
@@ -59,7 +63,7 @@ async def process_room_selection(callback_query: types.CallbackQuery, state: FSM
         await start_command(callback_query.message)
         await callback_query.answer()
         return
-    
+
     await state.update_data(room=callback_query.data)
     keyboard = create_inline_keyboard_dates()
     await callback_query.message.answer("Выберите день для бронирования:", reply_markup=keyboard)
@@ -80,8 +84,31 @@ async def process_date(callback_query: types.CallbackQuery, state: FSMContext):
     date_choice = data.get('date')
 
     selected_date = date.today() if date_choice == 'today' else date.today() + timedelta(days=1)
-    start_time = datetime.combine(selected_date, dtime(0, 0))
-    end_time = datetime.combine(selected_date, dtime(23, 59))
+    current_time = get_current_time()
+
+    # Определяем начало и конец рабочего дня
+    start_time = datetime.combine(selected_date, dtime(8, 0))
+    end_time = datetime.combine(selected_date, dtime(20, 0))
+
+    # Если текущее время позже начала рабочего дня, используем текущее время
+    if current_time > start_time:
+        start_time = current_time
+
+    # Если текущее время позже конца рабочего дня
+    if start_time >= end_time:
+        await callback_query.message.answer("Сегодня нет доступных слотов для бронирования.")
+        await state.finish()
+        return
+    
+    # Создаем доступные временные слоты
+    available_times = []
+    for hour in range(start_time.hour, end_time.hour):
+        if hour == start_time.hour and start_time.minute > 0:
+            continue  # Пропускаем текущее неполное время
+        if hour == end_time.hour - 1:
+            available_times.append(f"{hour:02d}:00")
+        else:
+            available_times.append(f"{hour:02d}:00")
 
     event_data = {
         'type': 'location',
@@ -96,14 +123,13 @@ async def process_date(callback_query: types.CallbackQuery, state: FSMContext):
     if isinstance(response, dict) and 'result' in response:
         events = response.get('result', [])
         busy_times = [event['DATE_FROM'][11:16] for event in events]
-        available_times = [f"{hour}:00" for hour in range(10, 19) if f"{hour}:00" not in busy_times]
+        available_times = [time for time in available_times if time not in busy_times]
         keyboard = create_inline_keyboard_times(available_times)
         await callback_query.message.answer("Выберите время для бронирования:", reply_markup=keyboard)
         await BookingState.confirming_booking.set()
     else:
         logging.error(f"Ошибка при получении событий: {response}")
         await callback_query.message.answer("Ошибка при получении событий, попробуйте позже.")
-
     await callback_query.answer()
 
 async def process_time(callback_query: types.CallbackQuery, state: FSMContext):
@@ -121,7 +147,7 @@ async def process_time(callback_query: types.CallbackQuery, state: FSMContext):
 
     selected_date = date.today() if date_choice == 'today' else date.today() + timedelta(days=1)
     start_time = datetime.combine(selected_date, datetime.strptime(time, '%H:%M').time())
-    end_time = start_time + timedelta(hours=1) 
+    end_time = start_time + timedelta(hours=1)
 
     event_data = {
         'type': 'location',
@@ -130,22 +156,17 @@ async def process_time(callback_query: types.CallbackQuery, state: FSMContext):
         'from': start_time.strftime('%Y-%m-%d %H:%M:%S'),
         'to': end_time.strftime('%Y-%m-%d %H:%M:%S'),
         'section': ROOMS[room],
-        'resource': room 
+        'resource': room
     }
 
     response = await booking_add(event_data)
 
-    if response is not None and 'result' in response:
+    if response and 'result' in response:
         await callback_query.message.answer("Бронирование успешно завершено!")
     else:
         logging.error(f"Ошибка при бронировании: {response}")
         await callback_query.message.answer("Ошибка при бронировании, попробуйте позже.")
 
     await state.finish()
-    await start_command(callback_query.message)  
+    await start_command(callback_query.message)
     await callback_query.answer()
-
-def register_booking_handlers(dp: Dispatcher):
-    dp.register_callback_query_handler(process_room_selection, state=BookingState.selecting_room)
-    dp.register_callback_query_handler(process_date, state=BookingState.selecting_time)
-    dp.register_callback_query_handler(process_time, state=BookingState.confirming_booking)

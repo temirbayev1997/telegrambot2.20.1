@@ -9,7 +9,6 @@ def register_congratulation_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(handle_inline_buttons, lambda c: c.data == "Поздравить пользователя")
 
 async def handle_inline_buttons(callback_query: types.CallbackQuery):
-    logging.debug(f"Обработка инлайн-кнопки: {callback_query.data}")
     await congratulate_user(callback_query.message)
     await callback_query.answer()
 
