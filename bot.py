@@ -50,7 +50,6 @@ async def on_startup(dp):
         BotCommand(command="/start", description="Начать работу с ботом"),
         BotCommand(command="/help", description="Справка")
     ])
-    logging.info("Бот запущен и готов к работе")
 
 if __name__ == "__main__":
     executor.start_polling(dp, on_startup=on_startup, allowed_updates=["message", "callback_query"])
