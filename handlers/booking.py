@@ -8,10 +8,10 @@ from utils.bitrix import booking_add, booking_get
 from handlers.common import start_command  
 
 ROOMS = {
-    "Комната 1": "9",
-    "Комната 2": "11",
-    "Комната 3": "13",
-    "Комната 4": "15"
+    "Комната 1": "11",
+    "Комната 2": "13",
+    "Комната 3": "15",
+    "Комната 4": "17"
 }
 
 class BookingState(StatesGroup):
