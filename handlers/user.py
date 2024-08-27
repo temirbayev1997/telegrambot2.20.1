@@ -4,7 +4,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from handlers.common import start_command
+from handlers.start import start_command
 
 from utils.bitrix import add_user_to_bitrix
 

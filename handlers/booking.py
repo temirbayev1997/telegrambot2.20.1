@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils.bitrix import booking_add, booking_get
-from handlers.common import start_command
+from handlers.start import start_command
 
 ROOMS = {
     "Комната 1": "11",
@@ -86,25 +86,21 @@ async def process_date(callback_query: types.CallbackQuery, state: FSMContext):
     selected_date = date.today() if date_choice == 'today' else date.today() + timedelta(days=1)
     current_time = get_current_time()
 
-    # Определяем начало и конец рабочего дня
     start_time = datetime.combine(selected_date, dtime(8, 0))
     end_time = datetime.combine(selected_date, dtime(20, 0))
 
-    # Если текущее время позже начала рабочего дня, используем текущее время
     if current_time > start_time:
         start_time = current_time
 
-    # Если текущее время позже конца рабочего дня
     if start_time >= end_time:
         await callback_query.message.answer("Сегодня нет доступных слотов для бронирования.")
         await state.finish()
         return
     
-    # Создаем доступные временные слоты
     available_times = []
     for hour in range(start_time.hour, end_time.hour):
         if hour == start_time.hour and start_time.minute > 0:
-            continue  # Пропускаем текущее неполное время
+            continue
         if hour == end_time.hour - 1:
             available_times.append(f"{hour:02d}:00")
         else:
