@@ -7,7 +7,7 @@ from aiogram.types import InputFile
 
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-from handlers.common import start_command
+from handlers.start import start_command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from PIL import Image
@@ -16,7 +16,6 @@ class Form(StatesGroup):
     waiting_for_photo_url = State()
 
 def register_photo_handlers(dp: Dispatcher):
-    logging.info("Registering photo handlers...")
 
     @dp.callback_query_handler(lambda c: c.data == 'Загрузить фото')
     async def handle_upload_photo(callback_query: types.CallbackQuery):

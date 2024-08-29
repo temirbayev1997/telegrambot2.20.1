@@ -59,8 +59,6 @@ async def process_contact(message: types.Message, state: FSMContext):
         'email': contact
     }
 
-    logging.debug(f"Данные для Bitrix: {user_info}")
-
     bitrix_data = {
         'NAME': user_info['first_name'],
         'LAST_NAME': user_info['last_name'],
@@ -68,9 +66,6 @@ async def process_contact(message: types.Message, state: FSMContext):
         'EXTRANET': 'Y',
         'SONET_GROUP_ID': [0]
     }
-
-    bitrix_data_json = json.dumps(bitrix_data, ensure_ascii=False, indent=4)
-    logging.debug(f"Данные для Bitrix в формате JSON: {bitrix_data_json}")
 
     success, response = await add_user_to_bitrix(bitrix_data)
     if success or 'Не указан код группы' in response.get('error_description', ''):
@@ -85,5 +80,5 @@ async def process_contact(message: types.Message, state: FSMContext):
 async def cancel_registration(callback_query: types.CallbackQuery, state: FSMContext):
     await state.finish()
     await callback_query.message.answer("Регистрация отменена.")
-    await start_command(callback_query.message)  # Вызов start_command для отображения меню
+    await start_command(callback_query.message) 
     await callback_query.answer()
