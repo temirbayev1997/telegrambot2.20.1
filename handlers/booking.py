@@ -8,10 +8,10 @@ from utils.bitrix import booking_add, booking_get
 from handlers.start import start_command
 
 ROOMS = {
-    "Комната 1": "11",
-    "Комната 2": "13",
-    "Комната 3": "15",
-    "Комната 4": "17"
+    "Комната 1": "6",
+    "Комната 2": "8",
+    "Комната 3": "10",
+    "Комната 4": "12"
 }
 
 def get_current_time():

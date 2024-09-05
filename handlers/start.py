@@ -3,8 +3,14 @@ from config import CREATE_USERS
 
 async def start_command(message: types.Message):
     user_username = message.from_user.username
+    
+    if not user_username:
+        user_username = message.from_user.first_name or message.from_user.last_name or "Пользователь"
+    else:
+        user_username = f"@{user_username}"  
+
     keyboard = types.InlineKeyboardMarkup()
-    if f"@{user_username}" in CREATE_USERS:
+    if user_username in CREATE_USERS:
         keyboard.add(types.InlineKeyboardButton(text="Создать пользователя", callback_data="Создать пользователя"))
 
     keyboard.add(types.InlineKeyboardButton(text="Поздравить пользователя", callback_data="Поздравить пользователя"))
