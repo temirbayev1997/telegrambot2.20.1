@@ -148,7 +148,7 @@ async def process_time(callback_query: types.CallbackQuery, state: FSMContext):
     event_data = {
         'type': 'location',
         'ownerId': '0',
-        'name': f"Бронирование переговорки {room}",
+        'name': f"{room}",
         'from': start_time.strftime('%Y-%m-%d %H:%M:%S'),
         'to': end_time.strftime('%Y-%m-%d %H:%M:%S'),
         'section': ROOMS[room],

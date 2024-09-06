@@ -94,6 +94,42 @@ async def booking_add(event_data):
             logging.error(f"Ошибка: {e}")
             return {'status_code': None, 'text': str(e)}
 
+def get_meeting_room_events():
+    url = f"{BITRIX_WEBHOOK_URL}/calendar.event.get"
+    params = {
+        "type": "location",
+        "owner": "0"
+    }
+    response = requests.post(url, json=params)
+    if response.status_code == 200:
+        events = response.json().get('result', [])
+        meeting_events = []
+        for event in events:
+            meeting_events.append({
+                'ID': event['ID'],
+                'NAME': event.get('NAME', 'Без названия'),
+                'START_TIME': event.get('DATE_FROM'),
+                'END_TIME': event.get('DATE_TO'),
+                'LOCATION': event.get('LOCATION', 'Не указано')
+            })
+        return meeting_events
+    else:
+        logging.error(f"Ошибка при получении событий: {response.text}")
+        return []
 
-# async def booding_delete(event_data):
-#     url = f"{BITRIX_WEBHOOK_URL}/"
+
+
+def delete_meeting_room_event(event_id):
+    url = f"{BITRIX_WEBHOOK_URL}/calendar.event.delete"
+    params = {
+        "type": "location",
+        "ownerId": "0",
+        "id": event_id
+
+    }
+    response = requests.post(url, json=params)
+    if response.status_code == 200:
+        return True
+    else:
+        logging.error(f"Ошибка при удалении события: {response.text}")
+        return False

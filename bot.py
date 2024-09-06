@@ -12,6 +12,7 @@ from handlers.photo import register_photo_handlers
 from handlers.congratulation import register_congratulation_handlers
 from handlers.booking import booking_user_handlers
 from handlers.user import register_user_handlers
+from handlers.del_booking import register_del_booking_handlers
 
 logging.basicConfig(level=logging.DEBUG)
 bot = Bot(token=API_TOKEN)
@@ -25,6 +26,7 @@ register_photo_handlers(dp)
 register_congratulation_handlers(dp)
 booking_user_handlers(dp)
 register_user_handlers(dp)
+register_del_booking_handlers(dp)
 
 async def on_startup(dp):
     await bot.set_my_commands([
