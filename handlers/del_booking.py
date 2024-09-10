@@ -29,7 +29,6 @@ async def process_delete_booking(callback_query: types.CallbackQuery):
         await callback_query.message.answer(f"Ошибка при отмене бронирования.")
 
 
-# Регистрация хендлеров
 def register_del_booking_handlers(dp):
     dp.register_callback_query_handler(cancel_booking, lambda c: c.data == "Отменить бронирвание")
     dp.register_callback_query_handler(process_delete_booking, lambda c: c.data.startswith("delete_"))
